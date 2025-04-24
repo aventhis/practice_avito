@@ -1,5 +1,5 @@
 # Этап 1: билд
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN go mod download
 
 # Копируем остальной код и собираем бинарник
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/pvz_service/main
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o server ./cmd/pvz_service/
 
 
 # Этап 2: минимальный образ
