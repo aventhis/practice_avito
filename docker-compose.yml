@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+#        «Запусти мой сервис (app) только после того,
+#  как сервис postgres станет healthy, т.е. пройдет healthcheck.»
+        condition: service_healthy
+    environment:
+            #// postgres://  логин : пароль @ адрес : порт / база ? параметры
+        - DB_URL=postgres://postgres:postgres@db:5432/postgres?sslmode=disable
+    restart: unless-stopped
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+#   healthcheck Это позволит app дождаться, пока база готова принимать соединения
+#  — а не просто запущена.
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
