@@ -1,0 +1,32 @@
+# Бинарники Go
+/server
+*.exe
+*.out
+*.test
+
+# Кэш Go-модуля
+/vendor/
+*.mod
+*.sum
+
+# Временные файлы сборки
+*.log
+*.tmp
+
+# Файлы IDE и редакторов
+.vscode/
+.idea/
+*.swp
+*~
+
+# Docker
+docker-compose.override.yml
+.env
+.env.local
+.env.*.local
+
+# Тестовые артефакты
+coverage.out
+
+# MacOS
+.DS_Store
