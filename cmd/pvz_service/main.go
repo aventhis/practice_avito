@@ -5,7 +5,7 @@ import (
 	"github.com/aventhis/practice_avito/internal/api"
 	"github.com/aventhis/practice_avito/internal/auth"
 	"github.com/aventhis/practice_avito/internal/config"
-	"github.com/aventhis/practice_avito/internal/storage/postgres"
+	"github.com/aventhis/practice_avito/internal/storage"
 	_ "github.com/google/uuid"
 	"log"
 	"net/http"
@@ -29,14 +29,11 @@ func main() {
 	// Значит, сначала storage → потом auth → потом API.
 
 	//К чему она подключается? — К БД. Значит, инициализируем storage.
-	storage, err := postgres.NewStorage(cfg.Database.DSN)
+	store, err := storage.NewStorage(cfg.Database.DSN)
 	if err != nil {
 		log.Fatalf("Не удалось инициализировать хранилище: %v", err)
 	}
-	if err = storage.Ping(); err != nil {
-		log.Fatalf("Не удалось подключиться к базе данных: %v", err)
-	}
-	if err = storage.InitDB(); err != nil {
+	if err = store.InitDB(); err != nil {
 		log.Fatalf("Не удалось инициализировать базу данных: %v", err)
 	}
 
