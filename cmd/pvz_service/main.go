@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/aventhis/practice_avito/internal/api"
 	"github.com/aventhis/practice_avito/internal/auth"
 	"github.com/aventhis/practice_avito/internal/config"
 	"github.com/aventhis/practice_avito/internal/storage/postgres"
@@ -22,6 +23,9 @@ func main() {
 
 	}
 
+	//Какие сервисы зависят друг от друга? — API зависит от storage и auth.
+	// Значит, сначала storage → потом auth → потом API.
+
 	//К чему она подключается? — К БД. Значит, инициализируем storage.
 	storage, err := postgres.NewStorage(cfg.Database.DSN)
 	if err != nil {
@@ -36,8 +40,9 @@ func main() {
 
 	// создание auth-сервиса, который будет работать с JWT 🔐
 	authService := auth.NewAuthService(cfg.Server.JWTSecret)
-	//Что ей нужно, чтобы принимать запросы? — API, значит, настраиваем HTTP-сервер.
-	//Какие сервисы зависят друг от друга? — API зависит от storage и auth.
-	// Значит, сначала storage → потом auth → потом API.
 
+	//Что ей нужно, чтобы принимать запросы? — API, значит, настраиваем HTTP-сервер.
+	apiServer := api.NewAPI(storage, authService)
+
+	// Здесь дальше будет запуск сервера
 }
