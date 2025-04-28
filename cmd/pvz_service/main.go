@@ -22,6 +22,12 @@ func main() {
 	}
 	//К чему она подключается? — К БД. Значит, инициализируем storage.
 	storage, err := postgres.NewStorage(сfg.Database.DSN)
+	if err := storage.Ping(); err != nil {
+		log.Fatalf("Не удалось подключиться к базе данных: %v", err)
+	}
+	if err := storage.InitDB(); err != nil {
+		log.Fatalf("Не удалось инициализировать базу данных: %v", err)
+	}
 	if err != nil {
 		log.Fatalf("Не удалось инициализировать хранилище: %v", err)
 	}
