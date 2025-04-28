@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"github.com/aventhis/practice_avito/internal/api"
 	"github.com/aventhis/practice_avito/internal/auth"
 	"github.com/aventhis/practice_avito/internal/config"
 	"github.com/aventhis/practice_avito/internal/storage/postgres"
 	_ "github.com/google/uuid"
 	"log"
+	"net/http"
 )
 
 //Подключение конфигурации (например, из .env или переменных окружения)
@@ -45,4 +47,10 @@ func main() {
 	apiServer := api.NewAPI(storage, authService)
 
 	// Здесь дальше будет запуск сервера
+	router := apiServer.SetupRoutes()
+
+	log.Printf("Сервер запущен на порту :%d", cfg.Server.Port)
+	if err = http.ListenAndServe(fmt.Sprintf(":%d", cfg.Server.Port), router); err != nil {
+		log.Fatalf("Ошибка при запуске сервера: %v", err)
+	}
 }
