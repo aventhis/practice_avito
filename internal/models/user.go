@@ -21,4 +21,12 @@ type User struct {
 }
 
 // CreateUser
+// GetUserByEmail
 // IsValidRole
+
+//register
+//login
+
+func IsValidRole(role string) bool {
+	return role == string(Employee) || role == string(Moderator)
+}
