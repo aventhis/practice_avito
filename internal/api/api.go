@@ -40,15 +40,23 @@ func (a *API) respondWithError(w http.ResponseWriter, code int, message string) 
 
 func (a *API) dummyLoginHandler(writer http.ResponseWriter, request *http.Request) {
 	var req models.DummyLoginRequest
-
 	if err := json.NewDecoder(request.Body).Decode(&req); err != nil {
 		a.respondWithError(writer, http.StatusBadRequest, ErrInvalidJson)
-
+		return
 	}
 
-	if models.IsValidRole(req.Role) {
-		// возвращаем сгенерированный jwt токен
-	} else {
+	if !models.IsValidRole(req.Role) {
 		a.respondWithError(writer, http.StatusBadRequest, ErrInvalidRole)
+		return
 	}
+
+	token, err := a.authService.GenerateToken(req.Role)
+	if err != nil {
+		a.respondWithError(writer, http.StatusInternalServerError, ErrTokenGeneration)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+	json.NewEncoder(writer).Encode(models.TokenResponse{Token: token})
 }
