@@ -4,17 +4,17 @@ import (
 	"encoding/json"
 	"github.com/aventhis/practice_avito/internal/auth"
 	"github.com/aventhis/practice_avito/internal/models"
-	"github.com/aventhis/practice_avito/internal/storage/postgres"
+	"github.com/aventhis/practice_avito/internal/storage"
 	"net/http"
 )
 
 type API struct {
-	storage     *postgres.Storage
+	storage     *storage.Storage
 	authService *auth.AuthService
 	router      *http.ServeMux
 }
 
-func NewAPI(storage *postgres.Storage, authService *auth.AuthService) *API {
+func NewAPI(storage *storage.Storage, authService *auth.AuthService) *API {
 	a := &API{
 		storage:     storage,
 		authService: authService,
@@ -24,11 +24,7 @@ func NewAPI(storage *postgres.Storage, authService *auth.AuthService) *API {
 }
 
 func (a *API) SetupRoutes() http.Handler {
-	a.router.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		writer.WriteHeader(http.StatusOK)
-		writer.Write([]byte("Hello, World!"))
-	})
-
+	a.router.HandleFunc("/dummyLogin", a.dummyLoginHandler)
 	return a.router
 }
 

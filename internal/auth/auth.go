@@ -31,9 +31,9 @@ func (a *AuthService) GenerateToken(role string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	singnedToken, err := token.SignedString([]byte(a.JWTSecret))
+	signedToken, err := token.SignedString([]byte(a.JWTSecret))
 	if err != nil {
 		return "", fmt.Errorf("ошибка при генерации токена: %w", err)
 	}
-	return singnedToken, nil
+	return signedToken, nil
 }

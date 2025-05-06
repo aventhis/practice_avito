@@ -41,7 +41,7 @@ func main() {
 	authService := auth.NewAuthService(cfg.Server.JWTSecret)
 
 	//Что ей нужно, чтобы принимать запросы? — API, значит, настраиваем HTTP-сервер.
-	apiServer := api.NewAPI(storage, authService)
+	apiServer := api.NewAPI(store, authService)
 
 	// Здесь дальше будет запуск сервера
 	router := apiServer.SetupRoutes()
